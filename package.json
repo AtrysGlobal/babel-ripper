@@ -1,5 +1,5 @@
 {
-  "name": "babel-ripper",
+  "name": "@atrysglobal/babel-ripper",
   "version": "1.0.4",
   "description": "Conjunto de herramientas de interfaz y tipado estricto para acceder a servicio de traducciones unificado BABEL.",
   "main": "lib/index.js",
@@ -28,7 +28,7 @@
     "integration",
     "atrys"
   ],
-  "author": "Atrys Health. Eduardo Munoz (cgustav)",
+  "author": "Atrys Health.",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/AtrysGlobal/babel-ripper/issues"

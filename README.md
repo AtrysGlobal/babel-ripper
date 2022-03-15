@@ -1,6 +1,5 @@
-# 💀 Babel Ripper
 
-!["Package logo"](https://static.vecteezy.com/system/resources/previews/003/206/412/original/kawaii-cartoon-of-a-skull-ripper-halloween-vector.jpg)
+!["Package logo"](./media/header.png)
 
 ## Configuración
 
