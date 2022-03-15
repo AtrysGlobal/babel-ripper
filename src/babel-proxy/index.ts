@@ -1,5 +1,6 @@
 import { AxiosInstance, Method } from 'axios';
 import { ALLOWED_HEADERS, BABEL_FEATURES, HTTP_VERB, LOCALES } from './enums';
+import { BabelHandler } from './libs/handler.lib';
 import { BabelProxyHttp } from './libs/http.lib';
 import {
   disasterMessagingTemplate,
@@ -44,7 +45,7 @@ export interface BabelTargetInterface {
 }
 
 export interface BabelServiceConfigParams {
-  defaultOkResponse: boolean;
+  defaultOkResponse?: boolean;
   defaultLocale?: string;
   apiKey: string;
 }
@@ -93,32 +94,39 @@ export default class BabelProxyService implements IBabelService {
     payload: unknown,
     options?: BabelRequestOptions,
   ): Promise<BabelMessagingResult> {
-    const transactionConfig = {
-      headers: {
-        [ALLOWED_HEADERS.LOCALE]: options?.locale ?? this.defaultLocale,
-      },
-    };
-
-    const response = await this.httpInstance.request({
-      baseURL: `${this.serviceUrl}${BABEL_FEATURES.MESSAGING}`,
-      method: method,
-      data: payload,
-      headers: transactionConfig.headers,
-    });
-
-    // const response = await this.httpInstance.post(payload, headOpts);
-
-    if (response.data) {
-      const { id, message, httpCode, internalCode } = response.data;
-      return {
-        id,
-        message,
-        httpCode,
-        internalCode,
+    try {
+      const transactionConfig = {
+        headers: {
+          [ALLOWED_HEADERS.LOCALE]: options?.locale ?? this.defaultLocale,
+        },
       };
-    }
 
-    return this.recoveryMessagingTemplate;
+      const response = await this.httpInstance.request({
+        baseURL: `${this.serviceUrl}${BABEL_FEATURES.MESSAGING}`,
+        method: method,
+        data: payload,
+        headers: transactionConfig.headers,
+      });
+
+      // const response = await this.httpInstance.post(payload, headOpts);
+
+      if (response.data) {
+        const { id, message, httpCode, internalCode } = response.data;
+        return {
+          id,
+          message,
+          httpCode,
+          internalCode,
+        };
+      }
+
+      return this.recoveryMessagingTemplate;
+    } catch (error) {
+      BabelHandler.fromAxios(error);
+      throw Error(
+        `INTERNAL Exception while obtaining [BABEL] message(s): ${error}`,
+      );
+    }
   }
 
   private async coreInterpreter(
@@ -126,24 +134,31 @@ export default class BabelProxyService implements IBabelService {
     payload: unknown,
     options?: BabelRequestOptions,
   ): Promise<BabelMessagingResult[]> {
-    const transactionConfig = {
-      headers: {
-        [ALLOWED_HEADERS.LOCALE]: options?.locale ?? this.defaultLocale,
-      },
-    };
+    try {
+      const transactionConfig = {
+        headers: {
+          [ALLOWED_HEADERS.LOCALE]: options?.locale ?? this.defaultLocale,
+        },
+      };
 
-    const response = await this.httpInstance.request({
-      baseURL: `${this.serviceUrl}${BABEL_FEATURES.INTERPRETER}`,
-      method: method,
-      data: payload,
-      headers: transactionConfig.headers,
-    });
+      const response = await this.httpInstance.request({
+        baseURL: `${this.serviceUrl}${BABEL_FEATURES.INTERPRETER}`,
+        method: method,
+        data: payload,
+        headers: transactionConfig.headers,
+      });
 
-    if (response.data) {
-      return response.data;
+      if (response.data) {
+        return response.data;
+      }
+
+      return this.recoveryInterpreterTemplate;
+    } catch (error) {
+      BabelHandler.fromAxios(error);
+      throw Error(
+        `INTERNAL Exception while obtaining [BABEL] translation(s): ${error}`,
+      );
     }
-
-    return this.recoveryInterpreterTemplate;
   }
 
   /**

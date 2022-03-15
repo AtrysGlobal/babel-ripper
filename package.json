@@ -1,7 +1,7 @@
 {
   "name": "babel-ripper",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.3",
+  "description": "Conjunto de herramientas de interfaz y tipado estricto para acceder a servicio de traducciones unificado BABEL.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -15,6 +15,9 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
+  "pre-push": [
+    "preversion"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AtrysGlobal/babel-ripper.git"
