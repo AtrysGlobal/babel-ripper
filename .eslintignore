@@ -1,0 +1,17 @@
+.esbuild/* 
+.scannerwork/* 
+.vscode/*
+node_modules/*
+
+__test__/*
+
+# Config ignores 
+
+tsconfig.paths.json
+tsconfig.json
+jest.config.js
+package.json
+
+# Safe Ignore
+.*/* 
+.*
