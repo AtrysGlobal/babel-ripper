@@ -1,5 +1,5 @@
 {
-  "name": "babel-ripper",
+  "name": "@atrysglobal/babel-ripper",
   "version": "1.0.3",
   "description": "Conjunto de herramientas de interfaz y tipado estricto para acceder a servicio de traducciones unificado BABEL.",
   "main": "lib/index.js",
