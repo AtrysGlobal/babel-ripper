@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ALLOWED_HEADERS } from '../enums';
-const BABEL_ADDRESS = 'http://localhost:3000/dev';
+const BABEL_ADDRESS = 'http://localhost:3000/dev' ?? process.env.BABEL_SERVICE;
 const BABEL_TIMEOUT = 5000;
 export abstract class BabelProxyHttp {
   static getInstanceConfig(): AxiosRequestConfig {
