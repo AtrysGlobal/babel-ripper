@@ -1,24 +1,22 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-// import config from '../../../config';
 import { ALLOWED_HEADERS } from '../enums';
-
+const BABEL_ADDRESS = 'http://localhost:3000/dev';
+const BABEL_TIMEOUT = 5000;
 export abstract class BabelProxyHttp {
   static getInstanceConfig(): AxiosRequestConfig {
-    //TODO: ADD BABEL ADDRESS
     return {
-      baseURL: 'config.babelAddress',
-      timeout: 5000,
+      baseURL: BABEL_ADDRESS,
+      timeout: BABEL_TIMEOUT,
       responseType: 'json',
     };
   }
 
-  static getInstance(): AxiosInstance {
+  static getInstance(apiKey: string): AxiosInstance {
     const instance = axios.create(BabelProxyHttp.getInstanceConfig());
     instance.interceptors.request.use(
-      function (config) {
-        //TODO: ADD BABEL API KEY
+      (config) => {
         if (config.headers) {
-          config.headers[ALLOWED_HEADERS.API_KEY] = 'api Key';
+          config.headers[ALLOWED_HEADERS.API_KEY] = apiKey;
         }
         return config;
       },

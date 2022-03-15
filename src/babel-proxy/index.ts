@@ -1,5 +1,5 @@
 import { AxiosInstance, Method } from 'axios';
-import { ALLOWED_HEADERS, BABEL_FEATURES, HTTP_VERB } from './enums';
+import { ALLOWED_HEADERS, BABEL_FEATURES, HTTP_VERB, LOCALES } from './enums';
 import { BabelProxyHttp } from './libs/http.lib';
 import {
   disasterMessagingTemplate,
@@ -46,6 +46,7 @@ export interface BabelTargetInterface {
 export interface BabelServiceConfigParams {
   defaultOkResponse: boolean;
   defaultLocale?: string;
+  apiKey: string;
 }
 
 /**
@@ -61,15 +62,18 @@ export default class BabelProxyService implements IBabelService {
   private recoveryMessagingTemplate: BabelMessagingResult;
   private recoveryInterpreterTemplate: any[];
 
-  constructor(options?: BabelServiceConfigParams) {
-    this.httpInstance = BabelProxyHttp.getInstance();
+  constructor(options: BabelServiceConfigParams) {
+    if (!options || !options.apiKey || !options.apiKey.length) {
+      throw new Error('Must provide a valid [BABEL] API Key');
+    }
+
+    this.httpInstance = BabelProxyHttp.getInstance(options.apiKey);
     this.serviceUrl = BabelProxyHttp.getInstanceConfig().baseURL ?? '';
 
-    //TODO: DEFINE SERVICE LOCALE
     this.defaultLocale =
       options && options.defaultLocale?.length
         ? options.defaultLocale
-        : 'config.serviceLocale';
+        : LOCALES.es_ES;
     this.recoveryMessagingTemplate =
       options && options?.defaultOkResponse === true
         ? okMessagingTemplate

@@ -26,3 +26,15 @@ export enum HTTP_VERB {
   PATH = 'PATH',
   DELETE = 'DELETE',
 }
+
+/**
+ * Supported Locale Codes
+ */
+export enum LOCALES {
+  es_ES = 'es_ES',
+  es_CO = 'es_CO',
+  es_AR = 'es_AR',
+  es_CL = 'es_CL',
+  pt_BR = 'pt_BR',
+  en_US = 'en_US',
+}
