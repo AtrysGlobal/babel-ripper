@@ -82,6 +82,20 @@ export default class BabelProxyService implements IBabelService {
     this.recoveryInterpreterTemplate = [];
   }
 
+  private resolveCorePayload(mod: string, payload: unknown) {
+    const base = {
+      module: mod,
+    };
+
+    if (mod === BABEL_FEATURES.MESSAGING) {
+      Object.assign(base, { message: payload });
+    } else {
+      Object.assign(base, { translations: payload });
+    }
+
+    return base;
+  }
+
   /**
    * Core handler for POST Requests
    * (Messaging feature)
@@ -102,9 +116,9 @@ export default class BabelProxyService implements IBabelService {
       };
 
       const response = await this.httpInstance.request({
-        baseURL: `${this.serviceUrl}${BABEL_FEATURES.MESSAGING}`,
+        baseURL: `${this.serviceUrl}`,
         method: method,
-        data: payload,
+        data: this.resolveCorePayload(BABEL_FEATURES.MESSAGING, payload),
         headers: transactionConfig.headers,
       });
 
@@ -142,9 +156,9 @@ export default class BabelProxyService implements IBabelService {
       };
 
       const response = await this.httpInstance.request({
-        baseURL: `${this.serviceUrl}${BABEL_FEATURES.INTERPRETER}`,
+        baseURL: `${this.serviceUrl}`,
         method: method,
-        data: payload,
+        data: this.resolveCorePayload(BABEL_FEATURES.INTERPRETER, payload),
         headers: transactionConfig.headers,
       });
 
