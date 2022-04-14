@@ -1,4 +1,3 @@
-
 !["Package logo"](./media/header.png)
 
 ## Configuración
@@ -70,6 +69,26 @@ console.log(rip.getTranslation(dictionary.formName));
 //"Nombre completo"
 ```
 
+### Traducciones desde diccionario (proceso simplificado)
+
+```javascript
+//Ref dictionary
+const dictionary = {
+  dateName: 'references.header.dateNameLabel',
+  folioName: 'references.header.folioNameLabel',
+  formName: 'references.nameLabel',
+};
+
+//Loading translations (includes pre-loaded Ripper)
+const rip = await babel.loadGuttedTranslations(dictionary);
+
+console.log(rip.getTranslation(dictionary.dateName));
+//"Fecha estimada"
+
+console.log(rip.getTranslation(dictionary.formName));
+//"Nombre completo"
+```
+
 ### Traducciones de mensajes de API
 
 Necesita recibir la traducción de un mensaje de traducción para respuesta estándar HTTP de su API. por ejemplo:
@@ -92,3 +111,4 @@ if (!userName) {
   return message;
 }
 ```
+
