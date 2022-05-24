@@ -1,6 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ALLOWED_HEADERS } from '../enums';
-const BABEL_ADDRESS = 'http://localhost:3000/dev' ?? process.env.BABEL_SERVICE;
+
+const defaultAddress =
+  'https://dev.services.telemedicina.com/translations/interpreter';
+
+const BABEL_ADDRESS = process.env.BABEL_SERVICE ?? defaultAddress;
 const BABEL_TIMEOUT = 5000;
 export abstract class BabelProxyHttp {
   static getInstanceConfig(): AxiosRequestConfig {

@@ -15,8 +15,8 @@ export enum ALLOWED_HEADERS {
  *
  */
 export enum BABEL_FEATURES {
-  MESSAGING = '/services/tcr/messaging',
-  INTERPRETER = '/services/tcr/interpreter',
+  MESSAGING = 'messaging',
+  INTERPRETER = 'interpreter',
 }
 
 export enum HTTP_VERB {

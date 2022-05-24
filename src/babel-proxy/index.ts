@@ -1,4 +1,5 @@
 import { AxiosInstance, Method } from 'axios';
+import { BabelRipper } from '../babel-ripper';
 import { ALLOWED_HEADERS, BABEL_FEATURES, HTTP_VERB, LOCALES } from './enums';
 import { BabelHandler } from './libs/handler.lib';
 import { BabelProxyHttp } from './libs/http.lib';
@@ -82,6 +83,20 @@ export default class BabelProxyService implements IBabelService {
     this.recoveryInterpreterTemplate = [];
   }
 
+  private resolveCorePayload(mod: string, payload: unknown) {
+    const base = {
+      module: mod,
+    };
+
+    if (mod === BABEL_FEATURES.MESSAGING) {
+      Object.assign(base, { message: payload });
+    } else {
+      Object.assign(base, { translations: payload });
+    }
+
+    return base;
+  }
+
   /**
    * Core handler for POST Requests
    * (Messaging feature)
@@ -102,13 +117,11 @@ export default class BabelProxyService implements IBabelService {
       };
 
       const response = await this.httpInstance.request({
-        baseURL: `${this.serviceUrl}${BABEL_FEATURES.MESSAGING}`,
+        baseURL: `${this.serviceUrl}`,
         method: method,
-        data: payload,
+        data: this.resolveCorePayload(BABEL_FEATURES.MESSAGING, payload),
         headers: transactionConfig.headers,
       });
-
-      // const response = await this.httpInstance.post(payload, headOpts);
 
       if (response.data) {
         const { id, message, httpCode, internalCode } = response.data;
@@ -142,9 +155,9 @@ export default class BabelProxyService implements IBabelService {
       };
 
       const response = await this.httpInstance.request({
-        baseURL: `${this.serviceUrl}${BABEL_FEATURES.INTERPRETER}`,
+        baseURL: `${this.serviceUrl}`,
         method: method,
-        data: payload,
+        data: this.resolveCorePayload(BABEL_FEATURES.INTERPRETER, payload),
         headers: transactionConfig.headers,
       });
 
@@ -179,6 +192,17 @@ export default class BabelProxyService implements IBabelService {
     return this.coreInterpreter(HTTP_VERB.POST, targetList, options);
   }
 
+  /**
+   * Objeto (diccionario con referencias i18n) destinado
+   * a mapear un conjunto de traducciones para simplificar
+   * proceso de traducción de grandes volúmenes de datos.
+   *
+   *
+   * @param targetList Listado de objetos de traducción/interpretación
+   * @param options Opciones de configuración (Request)
+   * @returns Objeto de traducciones
+   */
+
   public loadTranslationsFromObject(
     dictionaryKeyPair: ITranslationPayload,
     options?: BabelRequestOptions,
@@ -197,8 +221,31 @@ export default class BabelProxyService implements IBabelService {
       }
     });
 
-    // return this.babelService.getInterpreter(converted);
     return this.loadTranslations(converted, options);
+  }
+
+  /**
+   * Objeto (diccionario con referencias i18n) destinado
+   * a mapear un conjunto de traducciones para simplificar
+   * proceso de traducción de grandes volúmenes de datos.
+   *
+   * Esta función retorna un objeto BabelRipper ya listo
+   * para ser utilizado.
+   *
+   *
+   * @param targetList Listado de objetos de traducción/interpretación
+   * @param options Opciones de configuración (Request)
+   * @returns Objeto BabelRipper
+   */
+  public async loadGuttedTranslations(
+    dictionaryKeyPair: ITranslationPayload,
+    options?: BabelRequestOptions,
+  ): Promise<BabelRipper> {
+    const translations = await this.loadTranslationsFromObject(
+      dictionaryKeyPair,
+      options,
+    );
+    return new BabelRipper(translations);
   }
 
   /**
