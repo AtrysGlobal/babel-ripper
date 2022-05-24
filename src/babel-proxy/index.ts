@@ -70,7 +70,7 @@ export default class BabelProxyService implements IBabelService {
     }
 
     this.httpInstance = BabelProxyHttp.getInstance(options.apiKey);
-    this.serviceUrl = BabelProxyHttp.getInstanceConfig().baseURL ?? '';
+    this.serviceUrl = BabelProxyHttp.getInstanceConfig().baseURL || '';
 
     this.defaultLocale =
       options && options.defaultLocale?.length
@@ -112,7 +112,7 @@ export default class BabelProxyService implements IBabelService {
     try {
       const transactionConfig = {
         headers: {
-          [ALLOWED_HEADERS.LOCALE]: options?.locale ?? this.defaultLocale,
+          [ALLOWED_HEADERS.LOCALE]: options?.locale || this.defaultLocale,
         },
       };
 
@@ -150,7 +150,7 @@ export default class BabelProxyService implements IBabelService {
     try {
       const transactionConfig = {
         headers: {
-          [ALLOWED_HEADERS.LOCALE]: options?.locale ?? this.defaultLocale,
+          [ALLOWED_HEADERS.LOCALE]: options?.locale || this.defaultLocale,
         },
       };
 

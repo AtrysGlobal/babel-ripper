@@ -10,7 +10,7 @@ export class BabelRipper {
     return (
       this.translations.find((el) =>
         typeof input === 'string' ? el.id === input : el.id === input.target,
-      )?.message ?? ''
+      )?.message || ''
     );
   }
 
@@ -20,7 +20,7 @@ export class BabelRipper {
         typeof input === 'string'
           ? el.message === input
           : el.message === input.message,
-      )?.id ?? ''
+      )?.id || ''
     );
   }
 }
