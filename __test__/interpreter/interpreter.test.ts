@@ -27,9 +27,8 @@ describe('Interpreter Module Test Suite', () => {
 
   it("Dictionary translation to 'pt_BR' ", async () => {
     const dictionary = {
-      titleLabel: 'appointment-document.bioSigns.titleLabel',
-      messageTitle:
-        'messagingText.TEXT.sendCrossAppointmentAddComment.messageTitle',
+      titleLabel: 'prescription-types.PRESCRIPTION',
+      messageTitle: 'register-title',
     };
 
     const babel = new BabelProxyService({
