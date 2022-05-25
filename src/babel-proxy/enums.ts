@@ -4,7 +4,7 @@
  *
  */
 export enum ALLOWED_HEADERS {
-  LOCALE = 'Locale-Target',
+  LOCALE = 'locale',
   API_KEY = 'X-Api-Key',
 }
 

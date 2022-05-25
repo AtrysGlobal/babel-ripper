@@ -4,7 +4,7 @@ dotenv.config();
 import { BabelProxyService } from '../../src';
 
 describe('Interpreter Module Test Suite', () => {
-  const apiKey = process.env.SAMPLE_API_KEY ?? '';
+  const apiKey = process.env.SAMPLE_API_KEY || '';
 
   it("List translation to 'es_CL' ", async () => {
     const request = [
@@ -27,9 +27,8 @@ describe('Interpreter Module Test Suite', () => {
 
   it("Dictionary translation to 'pt_BR' ", async () => {
     const dictionary = {
-      titleLabel: 'appointment-document.bioSigns.titleLabel',
-      messageTitle:
-        'messagingText.TEXT.sendCrossAppointmentAddComment.messageTitle',
+      titleLabel: 'prescription-types.PRESCRIPTION',
+      messageTitle: 'register-title',
     };
 
     const babel = new BabelProxyService({
@@ -40,3 +39,4 @@ describe('Interpreter Module Test Suite', () => {
     expect(result.length).toBe(Object.values(dictionary).length);
   });
 });
+

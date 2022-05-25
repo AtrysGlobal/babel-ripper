@@ -4,7 +4,7 @@ dotenv.config();
 import { BabelProxyService } from '../../src';
 
 describe('Messaging Module Test Suite', () => {
-  const apiKey = process.env.SAMPLE_API_KEY ?? '';
+  const apiKey = process.env.SAMPLE_API_KEY || '';
 
   it("Valid messaging result from 'es_ES' ", async () => {
     const messaging = {
@@ -21,3 +21,4 @@ describe('Messaging Module Test Suite', () => {
     expect(result.httpCode).not.toBe(undefined);
   });
 });
+
