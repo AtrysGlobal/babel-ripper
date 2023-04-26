@@ -2,20 +2,25 @@
 
 ## Configuración
 
-Debe proporcionar una API_KEY válida para acceder a las funcionalidades de BABEL. Esta llave se especifica en la instanciación concreta de la clase `BabelProxyService`.
+Debe proporcionar una `Dirección de API` y una `API Key` válidas para acceder a las funcionalidades de BABEL. Esta llave se especifica en la instanciación concreta de la clase `BabelProxyService`.
 
 ```javascript
 const babel = new BabelProxyService({
+  apiAddress: 'MY-API-ADDRESS', //Babel API Address
   apiKey: 'MY-API-KEY', //Secret API Key
   defaultLocale: 'es_ES', //Lenguaje de traducciones por defecto
 });
 ```
 
-> **IMPORTANTE**: **_NUNCA_** especifique secretos de API o datos sensibles de manera estática en su código fuente, ya que datos importantes podrían verse expuestos. Prefiera variables de entorno y/u otros medios seguros.
+> **IMPORTANTE**: Prefiera variables de entorno y/u otros medios seguros para manejar datos sensibles en la configuración de su cliente `BabelProxyService`.
+
+> **IMPORTANTE**: El parámetro `apiAddress` se especifica a través del constructor de clase o en su defecto la variable de entorno `BABEL_SERVICE`. Si `babel-ripper` no detecta la dirección de API en el constructor o en la variable de entorno, el servicio gatillará una `excepción de instanciación`.
+
+> **IMPORTANTE**: Puede además configurar el valor de la propiedad `clientTimeout` para modificar los tiempos de espera de respuesta antes de forzar una excepción en tiempo de ejecución.
 
 ## Implementaciones
 
-Existen varias formas de implementación de la librería según sea su caso de uso
+Existen varias formas de implementación de la librería según sea su caso de uso:
 
 ### Traducciones desde una lista
 
@@ -62,10 +67,10 @@ const translations = await babel.loadTranslationsFromObject(dictionary);
 //BabelRipper plugin
 const rip = new BabelRipper(translations);
 
-console.log(rip.getTranslation(dictionary.dateName));
+console.log(rip.get(dictionary.dateName));
 //"Fecha estimada"
 
-console.log(rip.getTranslation(dictionary.formName));
+console.log(rip.get(dictionary.formName));
 //"Nombre completo"
 ```
 
@@ -82,10 +87,10 @@ const dictionary = {
 //Loading translations (includes pre-loaded Ripper)
 const rip = await babel.loadGuttedTranslations(dictionary);
 
-console.log(rip.getTranslation(dictionary.dateName));
+console.log(rip.get(dictionary.dateName));
 //"Fecha estimada"
 
-console.log(rip.getTranslation(dictionary.formName));
+console.log(rip.get(dictionary.formName));
 //"Nombre completo"
 ```
 
@@ -111,4 +116,16 @@ if (!userName) {
   return message;
 }
 ```
+
+## License
+
+Este proyecto se encuentra bajo la licencia `GNU General Public License`. Puede consultar más detalles [aquí](./LICENSE).
+
+## Changelog
+
+Puede consultar el historial de cambios [aquí](./CHANGELOG.md).
+
+## NPM Package
+
+Puede encontrar la distribución oficial de NPM de este proyecto [aquí](https://www.npmjs.com/package/@atrysglobal/babel-ripper).
 
