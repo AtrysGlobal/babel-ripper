@@ -14,6 +14,8 @@ const babel = new BabelProxyService({
 
 > **IMPORTANTE**: Prefiera variables de entorno y/u otros medios seguros para manejar datos sensibles en la configuración de su cliente `BabelProxyService`.
 
+> **IMPORTANTE**: El parámetro `apiAddress` se especifica a través del constructor de clase o en su defecto la variable de entorno `BABEL_SERVICE`. Si `babel-ripper` no detecta la dirección de API en el constructor o en la variable de entorno, el servicio gatillará una `excepción de instanciación`.
+
 > **IMPORTANTE**: Puede además configurar el valor de la propiedad `clientTimeout` para modificar los tiempos de espera de respuesta antes de forzar una excepción en tiempo de ejecución.
 
 ## Implementaciones

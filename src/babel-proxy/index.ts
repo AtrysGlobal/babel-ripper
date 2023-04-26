@@ -49,7 +49,7 @@ export interface BabelServiceConfigParams {
   defaultOkResponse?: boolean;
   defaultLocale?: string;
   apiKey: string;
-  apiAddress: string;
+  apiAddress?: string;
   clientTimeout?: number;
 }
 
@@ -86,7 +86,9 @@ export default class BabelProxyService implements IBabelService {
 
     // Api Address must be specified in any case and must
     // not be an empty string.
-    if (!options.apiAddress || !options.apiAddress.length) {
+    const serviceApiAddress = options.apiAddress || process.env.BABEL_SERVICE;
+
+    if (!serviceApiAddress || !serviceApiAddress.length) {
       throw new Error(
         'Babel Implementation Exception: Must provide a valid API address. Contact support center for more information.',
       );
@@ -95,12 +97,12 @@ export default class BabelProxyService implements IBabelService {
     // Obtain shared axios instance.
     this.httpInstance = BabelProxyHttp.getAxiosInstance({
       apiKey: options.apiKey,
-      baseURL: options.apiAddress,
+      baseURL: serviceApiAddress,
       timeout: options.clientTimeout,
     });
 
     // Obtain shared babel api address.
-    this.serviceUrl = options.apiAddress;
+    this.serviceUrl = serviceApiAddress;
 
     // Configure shared default locale.
     this.defaultLocale =
