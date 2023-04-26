@@ -5,6 +5,7 @@ import { BabelProxyService } from '../../src';
 
 describe('Messaging Module Test Suite', () => {
   const apiKey = process.env.SAMPLE_API_KEY || '';
+  const apiAddress = process.env.SAMPLE_API_ADDRESS || '';
 
   it("Valid messaging result from 'es_ES' ", async () => {
     const messaging = {
@@ -13,6 +14,7 @@ describe('Messaging Module Test Suite', () => {
 
     const babel = new BabelProxyService({
       apiKey,
+      apiAddress,
       defaultLocale: 'es_ES',
     });
     const result = await babel.loadMessage(messaging);

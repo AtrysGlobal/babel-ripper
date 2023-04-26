@@ -62,10 +62,10 @@ const translations = await babel.loadTranslationsFromObject(dictionary);
 //BabelRipper plugin
 const rip = new BabelRipper(translations);
 
-console.log(rip.getTranslation(dictionary.dateName));
+console.log(rip.get(dictionary.dateName));
 //"Fecha estimada"
 
-console.log(rip.getTranslation(dictionary.formName));
+console.log(rip.get(dictionary.formName));
 //"Nombre completo"
 ```
 
@@ -82,10 +82,10 @@ const dictionary = {
 //Loading translations (includes pre-loaded Ripper)
 const rip = await babel.loadGuttedTranslations(dictionary);
 
-console.log(rip.getTranslation(dictionary.dateName));
+console.log(rip.get(dictionary.dateName));
 //"Fecha estimada"
 
-console.log(rip.getTranslation(dictionary.formName));
+console.log(rip.get(dictionary.formName));
 //"Nombre completo"
 ```
 

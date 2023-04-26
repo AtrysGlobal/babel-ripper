@@ -8,11 +8,11 @@ import {
   okMessagingTemplate,
 } from './libs/templates.lib';
 
-interface ITranslationPayload {
+export interface ITranslationPayload {
   [key: string]: string | BabelTargetInterface;
 }
 
-interface IBabelService {
+export interface IBabelService {
   loadTranslations(
     targetList: BabelTargetInterface[],
     options: BabelRequestOptions,
@@ -49,12 +49,23 @@ export interface BabelServiceConfigParams {
   defaultOkResponse?: boolean;
   defaultLocale?: string;
   apiKey: string;
+  apiAddress: string;
+  clientTimeout?: number;
 }
 
 /**
- * Clase basada en el patrón proxy destinada a gestionar
- * la comunicación con servicio externo dedicado de
- * traducciones [Babel Serverless].
+ * Manages the organized retrieval of translations and pre-built
+ * of error messages from atrys babel service.
+ *
+ * Babel Service is organized in two main sections:
+ *
+ * - Translations: Used to retrieve translations
+ *   for a given target.
+ * - Interpreter: Used to retrieve pre-built error
+ *   messages for a given target.
+ *
+ * Also provides a method to retrieve translations
+ * from a given structured object via Ripper tool.
  *
  */
 export default class BabelProxyService implements IBabelService {
@@ -65,17 +76,40 @@ export default class BabelProxyService implements IBabelService {
   private recoveryInterpreterTemplate: any[];
 
   constructor(options: BabelServiceConfigParams) {
+    // Api Key must be specified in any case and must
+    // not be an empty string.
     if (!options || !options.apiKey || !options.apiKey.length) {
-      throw new Error('Must provide a valid [BABEL] API Key');
+      throw new Error(
+        'Babel Implementation Exception: Must provide a valid API key. Contact support center for more information.',
+      );
     }
 
-    this.httpInstance = BabelProxyHttp.getInstance(options.apiKey);
-    this.serviceUrl = BabelProxyHttp.getInstanceConfig().baseURL || '';
+    // Api Address must be specified in any case and must
+    // not be an empty string.
+    if (!options.apiAddress || !options.apiAddress.length) {
+      throw new Error(
+        'Babel Implementation Exception: Must provide a valid API address. Contact support center for more information.',
+      );
+    }
 
+    // Obtain shared axios instance.
+    this.httpInstance = BabelProxyHttp.getAxiosInstance({
+      apiKey: options.apiKey,
+      baseURL: options.apiAddress,
+      timeout: options.clientTimeout,
+    });
+
+    // Obtain shared babel api address.
+    this.serviceUrl = options.apiAddress;
+
+    // Configure shared default locale.
     this.defaultLocale =
       options && options.defaultLocale?.length
         ? options.defaultLocale
         : LOCALES.es_ES;
+
+    // Configure default response mechanism
+    // (by default service always responds with status 200).
     this.recoveryMessagingTemplate =
       options && options?.defaultOkResponse === true
         ? okMessagingTemplate
@@ -98,11 +132,13 @@ export default class BabelProxyService implements IBabelService {
   }
 
   /**
-   * Core handler for POST Requests
-   * (Messaging feature)
+   * Core handler for Messaging features.
    *
-   * @param endpoint
-   * @returns
+   * @param {Method} method - HTTP verb to use.
+   * @param {unknown} payload - Payload to send.
+   * @param {BabelRequestOptions} options - Options to use.
+   *
+   * @returns {Promise<BabelMessagingResult>} - Promise with the result.
    */
   private async coreMessaging(
     method: Method,
@@ -142,6 +178,15 @@ export default class BabelProxyService implements IBabelService {
     }
   }
 
+  /**
+   * Core handler for Interpreter features.
+   *
+   * @param {Method} method - HTTP verb to use.
+   * @param {unknown} payload - Payload to send.
+   * @param {BabelRequestOptions} options - Options to use.
+   *
+   * @returns {Promise<BabelMessagingResult[]>} - Promise with the result.
+   */
   private async coreInterpreter(
     method: Method,
     payload: unknown,
@@ -175,15 +220,14 @@ export default class BabelProxyService implements IBabelService {
   }
 
   /**
-   * Listado de textos a ser traducidos/interpretados a
-   * través de babel.
-   * Incluye soporte de interpolación de
-   * parámetros.
+   * Manages the translation of multiple messages
+   * through a reference list (i18n).
    *
+   * Includes support for interpolation of parameters.
    *
-   * @param targetList Listado de objetos de traducción/interpretación
-   * @param options Opciones de configuración (Request)
-   * @returns Listado de traducciones
+   * @param {BabelTargetInterface[]} targetList - Translations reference list.
+   * @param {BabelRequestOptions} options - On-the-fly configuration options.
+   * @returns {BabelMessagingResult[]} - List of translated messages.
    */
   public loadTranslations(
     targetList: BabelTargetInterface[],
@@ -193,14 +237,16 @@ export default class BabelProxyService implements IBabelService {
   }
 
   /**
-   * Objeto (diccionario con referencias i18n) destinado
-   * a mapear un conjunto de traducciones para simplificar
-   * proceso de traducción de grandes volúmenes de datos.
+   * Message translation process tool through
+   * reference dictionary (i18n).
    *
+   * This tool will respond with a BabelMessagingResult
+   * array. This mean that the translation result extracted
+   * and/or processing have to be defined by the client.
    *
-   * @param targetList Listado de objetos de traducción/interpretación
-   * @param options Opciones de configuración (Request)
-   * @returns Objeto de traducciones
+   * @param {ITranslationPayload} dictionaryKeyPair - Reference dictionary.
+   * @param {BabelRequestOptions} options - On-the-fly configuration options.
+   * @returns {BabelMessagingResult[]} - List of translated messages.
    */
 
   public loadTranslationsFromObject(
@@ -225,17 +271,29 @@ export default class BabelProxyService implements IBabelService {
   }
 
   /**
-   * Objeto (diccionario con referencias i18n) destinado
-   * a mapear un conjunto de traducciones para simplificar
-   * proceso de traducción de grandes volúmenes de datos.
+   * Message translation process tool through
+   * reference dictionary (i18n).
    *
-   * Esta función retorna un objeto BabelRipper ya listo
-   * para ser utilizado.
+   * This tool will respond with a BabelRipper
+   * object for an organized handling of translations.
+   *
+   * @example
+   *
+   * const dictionary = {
+   *    hello: 'messages.hello',
+   *    bye: 'messages.bye'
+   * }
+   *
+   * const babel = new BabelProxyService(...);
+   * const result = await babel.loadGuttedTranslations(dictionary);
+   *
+   * result.get(dictionary.hello); // Hola!
+   * result.get(dictionary.bye); // Adiós!
    *
    *
-   * @param targetList Listado de objetos de traducción/interpretación
-   * @param options Opciones de configuración (Request)
-   * @returns Objeto BabelRipper
+   * @param {ITranslationPayload} dictionaryKeyPair - Reference dictionary.
+   * @param {BabelRequestOptions} options - On-the-fly configuration options.
+   * @returns {BabelRipper} - Organized translation object.
    */
   public async loadGuttedTranslations(
     dictionaryKeyPair: ITranslationPayload,
@@ -249,15 +307,15 @@ export default class BabelProxyService implements IBabelService {
   }
 
   /**
-     * Obtiene un mensaje específico (éxito/error) a través
-     * del servicio de traducción babel. 
-     * Incluye soporte de interpolación de
-     * parámetros.
-
-     * @param target Objeto de mensaje a traducir
-     * @param options Opciones de configuración (Request)
-     * @returns Mensaje traducido
-     */
+   * Get a pre-defined message (success or error)
+   * translated through the babel service.
+   *
+   * Includes support for interpolation of parameters.
+   *
+   * @param {BabelTargetInterface} target - Object with message reference to be translated.
+   * @param {BabelRequestOptions} options - On-the-fly configuration options.
+   * @returns {BabelMessagingResult} - Translated message (or List of translated messages).
+   */
   public async loadMessage(
     target: BabelTargetInterface,
     options?: BabelRequestOptions,
