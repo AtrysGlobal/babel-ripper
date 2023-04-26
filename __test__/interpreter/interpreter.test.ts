@@ -5,6 +5,7 @@ import { BabelProxyService } from '../../src';
 
 describe('Interpreter Module Test Suite', () => {
   const apiKey = process.env.SAMPLE_API_KEY || '';
+  const apiAddress = process.env.SAMPLE_API_ADDRESS || '';
 
   it("List translation to 'es_CL' ", async () => {
     const request = [
@@ -19,8 +20,10 @@ describe('Interpreter Module Test Suite', () => {
 
     const babel = new BabelProxyService({
       apiKey,
+      apiAddress,
       defaultLocale: 'es_CL',
     });
+
     const result = await babel.loadTranslations(request);
     expect(result.length).toBe(request.length);
   });
@@ -33,6 +36,7 @@ describe('Interpreter Module Test Suite', () => {
 
     const babel = new BabelProxyService({
       apiKey,
+      apiAddress,
       defaultLocale: 'pt_BR',
     });
     const result = await babel.loadTranslationsFromObject(dictionary);

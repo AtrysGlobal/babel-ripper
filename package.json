@@ -1,7 +1,7 @@
 {
   "name": "@atrysglobal/babel-ripper",
-  "version": "1.0.8",
-  "description": "Conjunto de herramientas de interfaz y tipado estricto para acceder a servicio de traducciones unificado BABEL.",
+  "version": "1.0.9",
+  "description": "Interface and strict typing toolkit for accessing the BABEL unified translation service.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
