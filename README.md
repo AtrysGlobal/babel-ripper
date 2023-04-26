@@ -6,12 +6,13 @@ Debe proporcionar una API_KEY válida para acceder a las funcionalidades de BABE
 
 ```javascript
 const babel = new BabelProxyService({
+  apiAddress: 'MY-API-ADDRESS', //Babel API Address
   apiKey: 'MY-API-KEY', //Secret API Key
   defaultLocale: 'es_ES', //Lenguaje de traducciones por defecto
 });
 ```
 
-> **IMPORTANTE**: **_NUNCA_** especifique secretos de API o datos sensibles de manera estática en su código fuente, ya que datos importantes podrían verse expuestos. Prefiera variables de entorno y/u otros medios seguros.
+> **IMPORTANTE**: Prefiera variables de entorno y/u otros medios seguros para manejar datos sensibles en la configuración de su cliente `BabelProxyService`.
 
 ## Implementaciones
 
@@ -111,4 +112,16 @@ if (!userName) {
   return message;
 }
 ```
+
+## License
+
+Este proyecto se encuentra bajo la licencia `GNU General Public License`. Puede consultar más detalles [aquí](./LICENSE).
+
+## Changelog
+
+Puede consultar el historial de cambios [aquí](./CHANGELOG.md).
+
+## NPM Package
+
+Puede encontrar la distribución oficial de NPM de este proyecto [aquí](https://www.npmjs.com/package/@atrysglobal/babel-ripper).
 
