@@ -2,7 +2,7 @@
 
 ## Configuración
 
-Debe proporcionar una API_KEY válida para acceder a las funcionalidades de BABEL. Esta llave se especifica en la instanciación concreta de la clase `BabelProxyService`.
+Debe proporcionar una `Dirección de API` y una `API Key` válidas para acceder a las funcionalidades de BABEL. Esta llave se especifica en la instanciación concreta de la clase `BabelProxyService`.
 
 ```javascript
 const babel = new BabelProxyService({
@@ -14,9 +14,11 @@ const babel = new BabelProxyService({
 
 > **IMPORTANTE**: Prefiera variables de entorno y/u otros medios seguros para manejar datos sensibles en la configuración de su cliente `BabelProxyService`.
 
+> **IMPORTANTE**: Puede además configurar el valor de la propiedad `clientTimeout` para modificar los tiempos de espera de respuesta antes de forzar una excepción en tiempo de ejecución.
+
 ## Implementaciones
 
-Existen varias formas de implementación de la librería según sea su caso de uso
+Existen varias formas de implementación de la librería según sea su caso de uso:
 
 ### Traducciones desde una lista
 
